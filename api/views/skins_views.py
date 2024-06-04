@@ -11,7 +11,7 @@ class SkinList(Resource):
         skins = skin_service.get_skins()
         s = skin_schemas.SkinSchema(many=True)
         
-        return make_response(g.jsonify(skins), 200)#código 200 (OK), requisição bem sucedida
+        return make_response(s.jsonify(skins), 200)#código 200 (OK), requisição bem sucedida
     
     def post(self):
         s = skin_schemas.SkinSchema()
@@ -57,7 +57,7 @@ class SkinDetails(Resource):
                                                 value= value)
             skin_service.update_skin(new_skin, id)
             updated_skin = skin_service.get_skin_by_id(id)
-            return make_response(g.jsonify(updated_skin),200)
+            return make_response(s.jsonify(updated_skin),200)
     
     def delete(self, id):                    
         skin_bd = skin_service.get_skin_by_id(id)

@@ -30,5 +30,5 @@ def update_skin(self, id):
                                   }})
 
 @staticmethod
-def delete_game(id):
+def delete_skin(id):
     mongo.db.leagueOfSkins.delete_one({'_id': ObjectId(id)})

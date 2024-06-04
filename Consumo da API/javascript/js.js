@@ -1,16 +1,25 @@
 //Utilizando o Axios
 //Enviando uma requisição GET para API, para listar todos as Skins
 
-
 //Capturar botão de Criar Jogo
 const createBtn = document.getElementById("createBtn")
-
-createBtn.addEventListener("click", createGame)
+createBtn.addEventListener("click", createSkin)
 
 //Capturar botão de Edição
 const updateBtn = document.getElementById("updateBtn")
+updateBtn.addEventListener("click", updateSkin)
 
-updateBtn.addEventListener("click", updateGame)
+function updateTotalRP(){
+    const listSkins = document.getElementById("skins")
+    const items = listSkins.getElementsByTagName("li")
+    let totalRP = 0
+
+    for (let item of items){
+        const value = parseInt(item.getAttribute("data-value"))
+        totalRP +=value
+    }
+    document.getElementById("totalRP").innerText = `Total em RP: ${totalRP}`
+}
 
 axios.get("http://localhost:5000/leagueofskins").
 then(response => {
@@ -25,19 +34,17 @@ then(response => {
         item.setAttribute("data-hero", skin.hero)
         item.setAttribute("data-value", skin.value)
 
-        //const id = listItem.getAttibute("data-id")
 
         item.innerHTML = `<h4> ${skin.name}</h4>
-        <p>Descrição: ${skin.hero}</p>
-        <p>ano: ${skin.value}</p>
-        <p>id: ${skin._id}</p>`
+                            <p>Campeão: ${skin.hero}</p>
+                            <p>Valor em RP: ${skin.value}</p>
+                            <p>ID: ${skin._id}</p>`
 
         
         
         var deleteBTN = document.createElement("button")
         deleteBTN.innerHTML = "Deletar"
         deleteBTN.classList.add("btn", "btn-danger", "mb-3", "mx-2")
-        //quando clickar no botão
         deleteBTN.addEventListener("click", function(){
             deleteSkin(item)
         })
@@ -54,6 +61,7 @@ then(response => {
         item.appendChild(editBTN)
 
     })
+        updateTotalRP()
 })
 
 
@@ -65,34 +73,32 @@ function deleteSkin(listItem){
     then(response => {
         window.alert("Skin deletada com sucesso:", response.data)
         listItem.remove()
-    })
-    .catch(error =>{
+        
+    }).catch(error =>{
         window.alert("Erro ao deletar Skin", error)
     })
-
 }
 
-    function createSkin(){
+function createSkin(){
 
-        const form = document.getElementById("createForm")
-        form.addEventListener("submit" , function(event){
-            event.preventDefault() //Evita o envio padrão do formulário
-        })
+    const form = document.getElementById("createForm")
+    form.addEventListener("submit" , function(event){
+    event.preventDefault() //Evita o envio padrão do formulário
+    })
 
-        const nameInput = document.getElementById("name")
-        const heroInput = document.getElementById("hero")
-        const valueInput = document.getElementById("value")
+    const nameInput = document.getElementById("name")
+    const heroInput = document.getElementById("hero")
+    const valueInput = document.getElementById("value")
 
-        const skin = {
-            name: nameInput.value,
-            hero: heroInput.value,
-            value: valueInput.value
-        }
-
-        console.log(skin)
+    const skin = {
+        name: nameInput.value,
+        hero: heroInput.value,
+        value: valueInput.value
+    }
+    console.log(skin)
 
         //Enviando as informações do game para API
-axios.post("http://localhost:5000/leagueofskins", game).then(response =>{
+axios.post("http://localhost:5000/leagueofskins", skin).then(response =>{
 
 if (response.status ==201){
     alert("Skin Cadastrada com sucesso!")
@@ -121,7 +127,7 @@ if (response.status ==201){
 
     //Função para alterar o game
 
-    function updateGame(){
+    function updateSkin(){
 
         
         const form = document.getElementById("editForm")
@@ -143,7 +149,7 @@ if (response.status ==201){
 
         var id = idInput.value
 
-        axios.put(`http://localhost:5000/leagueofskins/${id}`, game).then(response => {
+        axios.put(`http://localhost:5000/leagueofskins/${id}`, skin).then(response => {
             if(response.status == 200){
                 alert("Skin Atualizada com sucesso")
                 location.reload()
@@ -153,4 +159,6 @@ if (response.status ==201){
         })
 
     }
+
+
 
